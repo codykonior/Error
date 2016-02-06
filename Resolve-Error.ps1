@@ -67,9 +67,34 @@ function Resolve-Error {
     if (!$AsString) {
         $records
     } else {
+        $string = @()
+        $first = $true
+
         $records | %{
-            "*" * 40
-            $_ | Select * | Out-String
+            if ($first) {
+                $string += "=" * 40
+                $first = $false
+            } else {
+                $string += "*" * 5
+            }
+            $string += $_ | Select * | Out-String
         }
+
+        $string += ""
+
+        $stack = Get-PSCallStack
+        for ($i = $stack.Count - 1; $i -ge 1; $i--) { 
+            $string += "-" * 5
+            $string += "Depth:     $i"
+            $string += "Function:  $($stack[$i].FunctionName)"
+            $string += "Arguments: $($stack[$i].Arguments)"
+            $string += "Line:      $($stack[$i].ScriptLineNumber)"
+            $string += "Command:   $($stack[$i].Position.Text)"
+        }
+        $string += ""
+        $string += ""
+
+        $string += "=" * 40
+        $string -join [System.Environment]::NewLine
     }
 }
