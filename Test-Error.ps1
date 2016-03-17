@@ -70,7 +70,7 @@ function Test-Error {
                 $match = $true
 
                 foreach ($thisTest in $Test.GetEnumerator()) {
-                    if (!$record.psobject.Properties[$thisTest.Name] -or $record.$($thisTest.Name) -ne $thisTest.Value) {
+                    if (!$record.psobject.Properties[$thisTest.Name] -or !$record.$($thisTest.Name) -or $record.$($thisTest.Name).ToString() -ne $thisTest.Value) {
                         $match = $false
                         break
                     }
