@@ -31,11 +31,11 @@ Tests whether the ErrorRecord, Exception, InnerException, and so forth are this 
 type of Exception. When providing this do not put it into string quotes.
 
 .EXAMPLE
-Test-Error @{ Number = 954; Class = 14; State = 1 }
-
 Tests whether the ErrorRecord, Exception, InnerException, and so forth have an item with
 all 3 properties which match these conditions. In this case we are detecting a specific
 kind of SqlError Exception that has a generic type.
+
+Test-Error @{ Number = 954; Class = 14; State = 1 }
 
 #>
 
@@ -53,7 +53,16 @@ function Test-Error {
     )
 
 	if (!$ErrorRecord) {
+        # This is a bit iffy, if it's a nested module it needs $_ as $Error will not be populated yet.
+        # If it's not a nested module then it needs a Get-Variable -Scope 2 
         $ErrorRecord = (Get-Variable -Name Error -Scope 2).Value | Select -First 1
+        <#
+        if ($Error.Count -gt 0) {
+            $ErrorRecord = $Error[0]
+        } else {
+            $ErrorRecord = $_
+        }
+        #>
 	}
 
     $records = Resolve-Error $ErrorRecord

@@ -45,7 +45,16 @@ function Resolve-Error {
     )
 
 	if (!$ErrorRecord) {
+        # This is a bit iffy, if it's a nested module it needs $_ as $Error will not be populated yet.
+        # If it's not a nested module then it needs a Get-Variable -Scope 2 
         $ErrorRecord = (Get-Variable -Name Error -Scope 2).Value | Select -First 1
+        <#
+        if ($Error.Count -gt 0) {
+            $ErrorRecord = $Error[0]
+        } else {
+            $ErrorRecord = $_
+        }
+        #>
 	}
 
     $records = @()
@@ -87,8 +96,11 @@ function Resolve-Error {
             $string += "-" * 5
             $string += "Depth:     $i"
             $string += "Function:  $($stack[$i].FunctionName)"
-            $string += "Arguments: $($stack[$i].Arguments)"
-            $string += "Line:      $($stack[$i].ScriptLineNumber)"
+            # In some highly threaded contexts this doesn't appear?
+	    if ($stack[$i].PSObject.Properties["Arguments"]) {
+            	$string += "Arguments: $($stack[$i].Arguments)"
+            }
+	    $string += "Line:      $($stack[$i].ScriptLineNumber)"
             $string += "Command:   $($stack[$i].Position.Text)"
         }
         $string += ""
