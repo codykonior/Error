@@ -31,11 +31,11 @@ Tests whether the ErrorRecord, Exception, InnerException, and so forth are this 
 type of Exception. When providing this do not put it into string quotes.
 
 .EXAMPLE
+Test-Error @{ Number = 954; Class = 14; State = 1 }
+
 Tests whether the ErrorRecord, Exception, InnerException, and so forth have an item with
 all 3 properties which match these conditions. In this case we are detecting a specific
 kind of SqlError Exception that has a generic type.
-
-Test-Error @{ Number = 954; Class = 14; State = 1 }
 
 #>
 
