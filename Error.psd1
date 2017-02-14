@@ -12,7 +12,7 @@
 RootModule = 'Error.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.0'
+ModuleVersion = '1.01'
 
 # ID used to uniquely identify this module
 GUID = '72c099ce-6a43-4fa1-a036-d5a8614185bc'
@@ -27,7 +27,7 @@ CompanyName = ''
 Copyright = '(c) 2016 Cody Konior. All rights reserved.'
 
 # Description of the functionality provided by this module
-Description = 'Operational Validation of SQL Server at scale with Jenkins and PowerShell'
+Description = 'Nested error record and exception identification, and stack dumping'
 
 # Minimum version of the Windows PowerShell engine required by this module
 # PowerShellVersion = ''
