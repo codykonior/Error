@@ -1,11 +1,10 @@
 <#
 
 .SYNOPSIS
-Recurses an error or exception for detail.
+Recurses an error record or exception object to flatten nested objects.
 
 .DESCRIPTION
-Loops through information caught in catch blocks; from an ErrorRecord (and its InvocationInfo), 
-to Exception, and InnerException.
+Loops through information caught in catch blocks; from an ErrorRecord (and its InvocationInfo), to Exception, and InnerException.
 
 .PARAMETER ErrorRecord
 An error record or exception. By default the last error is used.
@@ -17,8 +16,7 @@ Return an array of strings for printable output. By default we return an array o
 Returns items from outermost to innermost. By default we return items innermost to outermost.
 
 .INPUTS
-By default the last error; otherwise any error record or exception can be passed in by pipeline 
-or first parameter.
+By default the last error; otherwise any error record or exception can be passed in by pipeline or first parameter.
 
 .OUTPUTS
 An array of objects, or an array of strings.

@@ -1,25 +1,21 @@
 <#
 
 .SYNOPSIS
-Recurses an error and runs tests for a true/false result.
+Recurses an error record or exception object and returns true/false if a match is found.
 
 .DESCRIPTION
-Loops through information caught in catch blocks; from an ErrorRecord (and its InvocationInfo), 
-to Exception, and InnerException.
+Loops through information caught in catch blocks; from an ErrorRecord (and its InvocationInfo), to Exception, and InnerException.
 
-Each of these is then compared to either a provided type (e.g. an Exception type) or a hash
-table with a series of Name/Value property pairs.
+These are then compared to a specific type, or, a hash table with a set of desired properties and settings.
 
 .PARAMETER ErrorRecord
 An error record or exception. By default the last error is used.
 
 .PARAMETER Type
-A type to compare against. If any item in the exploded ErrorRecord entry matches this type
-then a $true result is returned.
+A type to compare against. If any item in the expanded ErrorRecord entry matches this typethen a $true result is returned.
 
-.PARAMETER Test
-A hash table with a series of Name/Value property pairs. If all of these exist on any item
-in the exploded ErrorRecord entry then a $true result is returned.
+.PARAMETER Property
+A hash table with a series of Name/Value property pairs. If all of these exist on any object in the expanded ErrorRecord entry then a $true result is returned.
 
 .OUTPUTS
 $true or $false.
@@ -27,15 +23,12 @@ $true or $false.
 .EXAMPLE
 Test-Error Microsoft.SqlServer.Management.Sdk.Sfc.InvalidVersionEnumeratorException
 
-Tests whether the ErrorRecord, Exception, InnerException, and so forth are this specific
-type of Exception. When providing this do not put it into string quotes.
+Tests whether the ErrorRecord, Exception, InnerException, and so forth are this specific type of Exception. When providing this do not put it into string quotes.
 
 .EXAMPLE
-Test-Error @{ Number = 954; Class = 14; State = 1 }
+Test-Error @{ Number = 954; Class = 14; State = 1; }
 
-Tests whether the ErrorRecord, Exception, InnerException, and so forth have an item with
-all 3 properties which match these conditions. In this case we are detecting a specific
-kind of SqlError Exception that has a generic type.
+Tests whether the ErrorRecord, Exception, InnerException, and so forth have an item with all 3 properties which match these conditions.
 
 #>
 
@@ -43,43 +36,34 @@ function Test-Error {
     [CmdletBinding(DefaultParameterSetName = "Type")]
     param (
         [Parameter(ValueFromPipeline = $true, ParameterSetName = "Type")]
-        [Parameter(ValueFromPipeline = $true, ParameterSetName = "Test")]
+        [Parameter(ValueFromPipeline = $true, ParameterSetName = "Property")]
         $ErrorRecord = $null,
 
         [Parameter(Mandatory = $true, Position = 1, ParameterSetName = "Type")]
         [type] $Type,
-        [Parameter(Mandatory = $true, Position = 1, ParameterSetName = "Test")]
-        [hashtable] $Test
+        [Parameter(Mandatory = $true, Position = 1, ParameterSetName = "Property")]
+        [hashtable] $Property
     )
 
 	if (!$ErrorRecord) {
-        # This is a bit iffy, if it's a nested module it needs $_ as $Error will not be populated yet.
-        # If it's not a nested module then it needs a Get-Variable -Scope 2 
         $ErrorRecord = (Get-Variable -Name Error -Scope 2).Value | Select -First 1
-        <#
-        if ($Error.Count -gt 0) {
-            $ErrorRecord = $Error[0]
-        } else {
-            $ErrorRecord = $_
-        }
-        #>
 	}
 
-    $records = Resolve-Error $ErrorRecord
+    $expandedErrorRecord = Resolve-Error $ErrorRecord
     
     switch ($PSCmdlet.ParameterSetName) {
         "Type" {
-            if ($records | Where { $_ -is $Type }) {
+            if ($expandedErrorRecord | Where { $_ -is $Type }) {
                 return $true
             }
         }
 
-        "Test" {
-            foreach ($record in $records) {
+        "Property" {
+            foreach ($record in $expandedErrorRecord) {
                 $match = $true
 
-                foreach ($thisTest in $Test.GetEnumerator()) {
-                    if (!$record.psobject.Properties[$thisTest.Name] -or !$record.$($thisTest.Name) -or $record.$($thisTest.Name).ToString() -ne $thisTest.Value) {
+                foreach ($thisProperty in $Property.GetEnumerator()) {
+                    if (!$record.psobject.Properties[$thisProperty.Name] -or !$record.$($thisProperty.Name) -or $record.$($thisProperty.Name).ToString() -ne $thisProperty.Value) {
                         $match = $false
                         break
                     }

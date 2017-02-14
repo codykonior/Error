@@ -1,14 +1,12 @@
-# PowerShell: Error module
-
-## TOPIC
+TOPIC
     about_Error
 
-## SHORT DESCRIPTION
+SHORT DESCRIPTION
     Error provides two important pieces of error/exception handling functionality that is
     missing or incomplete from PowerShell; identifying complex exceptions based on hash 
     tables, and writing out detailed stack trace information in text form.
     
-## LONG DESCRIPTION
+LONG DESCRIPTION
 	PowerShell provides a simple try { } catch (type) { } exception handling mechanic, but
 	due to the way exceptions are often wrapped in other exceptions and error records, it
 	is often the case that these will be missed.
@@ -29,10 +27,10 @@
 	in an exception, and optionally, converts this into a verbose (but almost readable)
 	string output suitable for use in stack traces.
 
-## REQUIREMENTS
+REQUIREMENTS
 	None.
 	
-## EXAMPLE #1
+EXAMPLE #1
 	try {
 		$ErrorActionPreference = "Stop"
 		Invoke-Sqlcmd -ServerInstance C1N1 -Query "Select 1/0" -IncludeSqlUserErrors
@@ -42,7 +40,7 @@
 
 	No output. This is because that exception type, despite being thrown, was buried.
 
-## EXAMPLE #2
+EXAMPLE #2
 	try {
 		$ErrorActionPreference = "Stop"
 		Invoke-Sqlcmd -ServerInstance C1N1 -Query "Select 1/0" -IncludeSqlUserErrors
@@ -56,7 +54,7 @@
 
 	Results in a Caught output because we successfully matched a nested exception.
 
-## EXAMPLE #3
+EXAMPLE #3
 	try {
 		$ErrorActionPreference = "Stop"
 		Invoke-Sqlcmd -ServerInstance C1N1 -Query "Select 1/0" -IncludeSqlUserErrors
@@ -70,7 +68,7 @@
 
 	Results in a Caught output because we successfully matched a set of properties.
 	
-## EXAMPLE #4
+EXAMPLE #4
 	try {
 		$ErrorActionPreference = "Stop"
 		Invoke-Sqlcmd -ServerInstance C1N1 -Query "Select 1/0" -IncludeSqlUserErrors
@@ -80,5 +78,5 @@
 
 	A detailed string-style expansion of exceptions, error records, and the stack trace.
 	
-## LINKS
+LINKS
     https://github.com/codykonior/Error

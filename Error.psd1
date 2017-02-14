@@ -8,10 +8,8 @@
 
 @{
 
-ModuleToProcess = 'Error.psm1'
-
 # Script module or binary module file associated with this manifest.
-# RootModule = ''
+RootModule = 'Error.psm1'
 
 # Version number of this module.
 ModuleVersion = '1.0'
@@ -23,13 +21,13 @@ GUID = '72c099ce-6a43-4fa1-a036-d5a8614185bc'
 Author = 'Cody Konior'
 
 # Company or vendor of this module
-CompanyName = 'Cody Konior'
+CompanyName = ''
 
 # Copyright statement for this module
 Copyright = '(c) 2016 Cody Konior. All rights reserved.'
 
 # Description of the functionality provided by this module
-# Description = ''
+Description = 'Operational Validation of SQL Server at scale with Jenkins and PowerShell'
 
 # Minimum version of the Windows PowerShell engine required by this module
 # PowerShellVersion = ''
