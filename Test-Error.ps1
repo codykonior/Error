@@ -34,6 +34,7 @@ Tests whether the ErrorRecord, Exception, InnerException, and so forth have an i
 
 function Test-Error {
     [CmdletBinding(DefaultParameterSetName = "Type")]
+    [OutputType("System.Boolean")]
     param (
         [Parameter(ValueFromPipeline = $true, ParameterSetName = "Type")]
         [Parameter(ValueFromPipeline = $true, ParameterSetName = "Property")]
@@ -46,14 +47,14 @@ function Test-Error {
     )
 
 	if (!$ErrorRecord) {
-        $ErrorRecord = (Get-Variable -Name Error -Scope 2).Value | Select -First 1
+        $ErrorRecord = (Get-Variable -Name Error -Scope 2).Value | Select-Object -First 1
 	}
 
     $expandedErrorRecord = Resolve-Error $ErrorRecord
     
     switch ($PSCmdlet.ParameterSetName) {
         "Type" {
-            if ($expandedErrorRecord | Where { $_ -is $Type }) {
+            if ($expandedErrorRecord | Where-Object { $_ -is $Type }) {
                 return $true
             }
         }
