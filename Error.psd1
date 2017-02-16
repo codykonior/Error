@@ -14,6 +14,9 @@ RootModule = 'Error.psm1'
 # Version number of this module.
 ModuleVersion = '1.1.0.1'
 
+# Supported PSEditions
+# CompatiblePSEditions = @()
+
 # ID used to uniquely identify this module
 GUID = '72c099ce-6a43-4fa1-a036-d5a8614185bc'
 
@@ -49,7 +52,6 @@ Description = 'Nested error record and exception identification, and stack dumpi
 
 # Modules that must be imported into the global environment prior to importing this module
 # RequiredModules = @()
-
 
 # Assemblies that must be loaded prior to importing this module
 # RequiredAssemblies = @()
