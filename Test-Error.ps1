@@ -37,18 +37,21 @@ function Test-Error {
     [OutputType("System.Boolean")]
     param (
         [Parameter(ValueFromPipeline = $true, ParameterSetName = "Type")]
+        [Parameter(ValueFromPipeline = $true, ParameterSetName = "TypeName")]
         [Parameter(ValueFromPipeline = $true, ParameterSetName = "Property")]
         $ErrorRecord = $null,
 
         [Parameter(Mandatory = $true, Position = 1, ParameterSetName = "Type")]
         [type] $Type,
+        [Parameter(Mandatory = $true, Position = 1, ParameterSetName = "TypeName")]
+        [string] $TypeName,
         [Parameter(Mandatory = $true, Position = 1, ParameterSetName = "Property")]
         [hashtable] $Property
     )
 
-	if (!$ErrorRecord) {
+    if (!$ErrorRecord) {
         $ErrorRecord = (Get-Variable -Name Error -Scope 2).Value | Select-Object -First 1
-	}
+    }
 
     $expandedErrorRecord = Resolve-Error $ErrorRecord
     
@@ -57,8 +60,16 @@ function Test-Error {
             if ($expandedErrorRecord | Where-Object { $_ -is $Type }) {
                 return $true
             }
+            break
         }
 
+        "TypeName" {
+            if ($expandedErrorRecord | Where-Object { @($_.GetType(), $_.GetType().FullName) -contains $TypeName }) {
+                return $true
+            }
+            break
+        }
+        
         "Property" {
             foreach ($record in $expandedErrorRecord) {
                 $match = $true
@@ -74,6 +85,7 @@ function Test-Error {
                     return $true
                 }
             }
+            break
         }
     }
 
