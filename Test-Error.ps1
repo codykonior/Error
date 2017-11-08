@@ -75,7 +75,7 @@ function Test-Error {
                 $match = $true
 
                 foreach ($thisProperty in $Property.GetEnumerator()) {
-                    if (!$record.psobject.Properties[$thisProperty.Name] -or !$record.$($thisProperty.Name) -or $record.$($thisProperty.Name).ToString() -ne $thisProperty.Value) {
+                    if (!$record.psobject.Properties[$thisProperty.Key] -or !$record.$($thisProperty.Key) -or $record.$($thisProperty.Key).ToString() -ne $thisProperty.Value) {
                         $match = $false
                         break
                     }
