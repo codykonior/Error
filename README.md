@@ -9,76 +9,76 @@
     tables, and writing out detailed stack trace information in text form.
     
 ## LONG DESCRIPTION
-	PowerShell provides a simple try { } catch (type) { } exception handling mechanic, but
-	due to the way exceptions are often wrapped in other exceptions and error records, it
-	is often the case that these will be missed.
-	
-	Furthermore when catching SQL Server exceptions these have an object nested at an
-	arbitrary depth with important properties to indicate what kind of exception it is 
-	(such as severity, error number, message, state). 
-	
-	Together these two things lead to extremely long and complex catch blocks. To address
-	this a Test-Error function is provided.
-	
-	* Test-Error -Type to identify an exception based on a type; matching not just the
-		top object type but other common objects nested within it.
-	* Test-Error -Property to identify an exception based on a hash table of matching
-		properties on any single nested object within the error.
-		
-	Another function, Resolve-Error, either returns an expanded view of nested objects
-	in an exception, and optionally, converts this into a verbose (but almost readable)
-	string output suitable for use in stack traces.
+    PowerShell provides a simple try { } catch (type) { } exception handling mechanic, but
+    due to the way exceptions are often wrapped in other exceptions and error records, it
+    is often the case that these will be missed.
+    
+    Furthermore when catching SQL Server exceptions these have an object nested at an
+    arbitrary depth with important properties to indicate what kind of exception it is 
+    (such as severity, error number, message, state). 
+    
+    Together these two things lead to extremely long and complex catch blocks. To address
+    this a Test-Error function is provided.
+    
+    * Test-Error -Type to identify an exception based on a type; matching not just the
+        top object type but other common objects nested within it.
+    * Test-Error -Property to identify an exception based on a hash table of matching
+        properties on any single nested object within the error.
+        
+    Another function, Resolve-Error, either returns an expanded view of nested objects
+    in an exception, and optionally, converts this into a verbose (but almost readable)
+    string output suitable for use in stack traces.
 
 ## REQUIREMENTS
-	None.
-	
+    None.
+    
 ## EXAMPLE #1
-	try {
-		$ErrorActionPreference = "Stop"
-		Invoke-Sqlcmd -ServerInstance C1N1 -Query "Select 1/0" -IncludeSqlUserErrors
-	} catch [System.Data.SqlClient.SqlException] {
- 		"Caught"
-	}
+    try {
+        $ErrorActionPreference = "Stop"
+        Invoke-Sqlcmd -ServerInstance C1N1 -Query "Select 1/0" -IncludeSqlUserErrors
+    } catch [System.Data.SqlClient.SqlException] {
+        "Caught"
+    }
 
-	No output. This is because that exception type, despite being thrown, was buried.
+    No output. This is because that exception type, despite being thrown, was buried.
 
 ## EXAMPLE #2
-	try {
-		$ErrorActionPreference = "Stop"
-		Invoke-Sqlcmd -ServerInstance C1N1 -Query "Select 1/0" -IncludeSqlUserErrors
-	} catch {
-		if (Test-Error System.Data.SqlClient.SqlException) {
-	 		"Caught"
-	 	} else {
-	 		"Not caught"
-	 	}
-	}
+    try {
+        $ErrorActionPreference = "Stop"
+        Invoke-Sqlcmd -ServerInstance C1N1 -Query "Select 1/0" -IncludeSqlUserErrors
+    } catch {
+        if (Test-Error System.Data.SqlClient.SqlException) {
+            "Caught"
+        } else {
+            "Not caught"
+        }
+    }
 
-	Results in a Caught output because we successfully matched a nested exception.
+    Results in a Caught output because we successfully matched a nested exception.
 
 ## EXAMPLE #3
-	try {
-		$ErrorActionPreference = "Stop"
-		Invoke-Sqlcmd -ServerInstance C1N1 -Query "Select 1/0" -IncludeSqlUserErrors
-	} catch {
-		if (Test-Error @{ Class = 16; Number = 8134; }) {
-	 		"Caught"
-	 	} else {
-	 		"Not caught"
-	 	}
-	}
+    try {
+        $ErrorActionPreference = "Stop"
+        Invoke-Sqlcmd -ServerInstance C1N1 -Query "Select 1/0" -IncludeSqlUserErrors
+    } catch {
+        if (Test-Error @{ Class = 16; Number = 8134; }) {
+            "Caught"
+        } else {
+            "Not caught"
+        }
+    }
 
-	Results in a Caught output because we successfully matched a set of properties.
-	
+    Results in a Caught output because we successfully matched a set of properties.
+    
 ## EXAMPLE #4
-	try {
-		$ErrorActionPreference = "Stop"
-		Invoke-Sqlcmd -ServerInstance C1N1 -Query "Select 1/0" -IncludeSqlUserErrors
-	} catch {
-		Resolve-Error $_ -AsString
-	}
+    try {
+        $ErrorActionPreference = "Stop"
+        Invoke-Sqlcmd -ServerInstance C1N1 -Query "Select 1/0" -IncludeSqlUserErrors
+    } catch {
+        Resolve-Error $_ -AsString
+    }
 
-	A detailed string-style expansion of exceptions, error records, and the stack trace.
-	
+    A detailed string-style expansion of exceptions, error records, and the stack trace.
+    
 ## LINKS
     https://github.com/codykonior/Error
