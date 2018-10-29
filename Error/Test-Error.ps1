@@ -54,7 +54,7 @@ function Test-Error {
     }
 
     $expandedErrorRecord = Resolve-Error $ErrorRecord
-    
+
     switch ($PSCmdlet.ParameterSetName) {
         "Type" {
             if ($expandedErrorRecord | Where-Object { $_ -is $Type }) {
@@ -69,7 +69,7 @@ function Test-Error {
             }
             break
         }
-        
+
         "Property" {
             foreach ($record in $expandedErrorRecord) {
                 $match = $true
