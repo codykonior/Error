@@ -90,6 +90,6 @@ try {
 
 A detailed string-style expansion of exceptions, error records, and the stack trace.
 
-[1]: Images/errpr.ai.svg
+[1]: Images/error.ai.svg
 [2]: Images/error.gif
 [3]: CHANGELOG.md
